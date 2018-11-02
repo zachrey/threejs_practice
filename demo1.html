@@ -11,6 +11,7 @@
   }
   </style>
   <script src="lib/three.js"></script>
+  <script src="lib/controls//OrbitControls.js"></script>
   <script>
   window.onload = function() {
     var scene = new THREE.Scene()
@@ -20,6 +21,8 @@
     render.setSize(window.innerWidth - 50, window.innerHeight - 50)
     document.body.appendChild(render.domElement)
     camera.lookAt(0, 0, 0)
+    var controls = new THREE.OrbitControls( camera )
+
     var helper = new THREE.CameraHelper( camera )
     scene.add( helper )
 
@@ -55,6 +58,7 @@
 
     function animte() {
       requestAnimationFrame(animte)
+      controls.update()
       render.render(scene, camera)
     }
 
