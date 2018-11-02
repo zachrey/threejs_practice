@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>My first three.js app</title>
+  <style>
+  body {
+    margin: 0;
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%
+  }
+  </style>
+</head>
+<script src="lib/three.js"></script>
+<script>
+window.onload = function() {
+  var scene = new THREE.Scene(); // 创建场景
+  var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1500); // 创建相机
+  var renderer = new THREE.WebGLRenderer(); // 创建渲染器
+
+  renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+  document.body.appendChild(renderer.domElement);
+
+  var geometry = new THREE.BoxGeometry(1, 4, 4); // 创建物理元素
+  var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // 创建材料
+  var cube = new THREE.Mesh(geometry, material); // 根据 geometry 和 material 创建 mesh
+  scene.add(cube)
+
+  camera.position.z = 5;
+
+  // cube.rotation.x += 10
+  // cube.rotation.y += 10
+
+  function animate() {
+    requestAnimationFrame(animate); // 每60帧渲染一次
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    renderer.render(scene, camera); // 开始渲染
+  }
+  animate();
+}
+</script>
+
+<body>
+</body>
+
+</html>
