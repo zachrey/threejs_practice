@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="lib/three.js"></script>
+  <script src="lib/controls//OrbitControls.js"></script>
+  <script src="lib/stat.js"></script>
+</head>
+<body>
+  <button id="stop">停止动画</button>
+  <button id="start">开始动画</button>
+<script>
+const THREE = window.THREE
+
+function domOp() {
+  document.querySelector('#stop')
+    .addEventListener('click', () => {
+      if (window.requestAnimationFrameID !== null) {
+        cancelAnimationFrame(window.requestAnimationFrameID)
+        window.requestAnimationFrameID = null
+      }
+    })
+  document.querySelector('#start')
+    .addEventListener('click', () => {
+      if (window.requestAnimationFrameID !== null) {
+        cancelAnimationFrame(window.requestAnimationFrameID)
+        window.requestAnimationFrameID = null
+      }
+      window.animate()
+    })
+}
+var stat = null
+function init() {
+  stat = new window.Stats()
+  stat.domElement.style.position = 'absolute'
+  stat.domElement.style.left = '400px'
+  stat.domElement.style.right = '0px'
+  stat.domElement.style.top = '0px'
+  document.body.appendChild(stat.domElement)
+}
+
+window.onload = function() {
+  domOp()
+  init()
+  var scene = new THREE.Scene()
+  var render = new THREE.WebGLRenderer()
+  var aspect = window.innerWidth / window.innerHeight
+  var camera = new THREE.PerspectiveCamera(75, aspect, .1, 1500)
+  render.setSize(window.innerWidth - 50, window.innerHeight - 50)
+  document.body.appendChild(render.domElement)
+  camera.lookAt(0, 0, 0)
+  camera.position.set(0, 0, 400)
+  var controls = new THREE.OrbitControls( camera )
+
+  var cube = new THREE.Mesh(
+    new THREE.CubeGeometry(50, 50, 50),
+    new THREE.MeshBasicMaterial({
+      color: 0xE42222,
+    })
+  )
+
+  scene.add(cube)
+
+  window.animate = function animate() {
+    stat.begin()
+    window.requestAnimationFrameID = requestAnimationFrame(window.animate)
+    cube.rotation.y = (cube.rotation.y + 0.01) % (Math.PI * 2)
+    cube.rotation.x = (cube.rotation.y + 0.01) % (Math.PI * 2)
+    controls.update()
+    render.render(scene, camera)
+    stat.end()
+  }
+
+  window.animate()
+}
+</script>
+</body>
+</html>

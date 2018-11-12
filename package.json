@@ -1,0 +1,25 @@
+{
+  "name": "three_demo",
+  "version": "1.0.0",
+  "description": "练习threejs",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zachrey/threejs_practice.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zachrey/threejs_practice/issues"
+  },
+  "homepage": "https://github.com/zachrey/threejs_practice#readme",
+  "devDependencies": {
+    "eslint": "^5.8.0"
+  }
+}

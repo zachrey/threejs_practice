@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="lib/three.js"></script>
+  <script src="lib/controls/OrbitControls.js"></script>
+</head>
+<body>
+<script>
+var THREE = window.THREE
+window.onload = function() {
+  var renderer = new THREE.WebGLRenderer({antialias: true}) 
+  var scene = new THREE.Scene()
+  var apsect = window.innerWidth / window.innerHeight
+  var camera = new THREE.PerspectiveCamera(45, apsect, .1, 1000)
+  var controls = new THREE.OrbitControls(camera)
+  var helper = new THREE.CameraHelper(camera)
+
+  var ambientLight = new THREE.AmbientLight( 0x0c0c0c );
+  scene.add( ambientLight );
+
+  var light = new THREE.SpotLight(0xFFFFFF, 2.0, 400)
+  light.castShadow = true
+  light.shadow.camera.near = 2;
+  light.shadow.camera.far = 400;
+  light.shadow.camera.fov = 75;
+  light.shadow.mapSize.width = 2048;
+  light.shadow.mapSize.height = 2048;
+  scene.add(light)
+
+  renderer.setSize(window.innerWidth - 50, window.innerHeight - 50)
+  renderer.shadowMap.enabled = true // 阴影
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  renderer.setClearColor(0xffffff)
+
+  camera.position.set(50, 200, 300)
+  camera.lookAt(0, 0, 0)
+  light.position.set(50, 150, 100)
+  document.body.appendChild(renderer.domElement)
+  // scene.add(helper)
+  var plane = new THREE.Mesh(
+    new THREE.PlaneBufferGeometry(200, 200),
+    new THREE.MeshLambertMaterial({
+      color: 0x00ff00,
+      side: THREE.DoubleSide,
+    }),
+  )
+  plane.rotation.x = Math.PI / 2
+  plane.receiveShadow = true
+  scene.add(plane)
+
+  var cube = new THREE.Mesh(new THREE.BoxBufferGeometry(50, 50, 50),
+    new THREE.MeshStandardMaterial({color: 0xff0000}))
+  // cube.position.x = 50;
+  cube.position.y = 25;
+  // cube.position.z = 50;
+  cube.castShadow = true;
+  scene.add(cube);
+
+  light.target = cube
+
+  scene.add(new THREE.CameraHelper(light.shadow.camera))
+
+  function render() {
+    requestAnimationFrame(render)
+    controls.update()
+    renderer.render(scene, camera)
+  }
+
+  render()
+}
+</script>
+</body>
+</html>

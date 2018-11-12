@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="lib/three.js"></script>
+  <script src="lib/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <canvas id="main" width="1000px" height="800px"></canvas>
+  <script>
+    var renderer = null
+    var scene = null
+    var camera = null
+    var light = null
+    var controls = null
+    var cube1 = null
+    var a = 1
+
+    var position = {
+      camera: [50, 150, 500],
+      light: [0, 150, 0],
+    }
+
+    window.onload = function() {
+      initWebGL()
+      initScene()
+      initCamera()
+      initControls()
+      initLight()
+      addGeometry()
+      light.target = cube1
+      scene.add( light.target )
+      render()
+    }
+
+    function initWebGL() {
+      renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector('#main')
+      })
+    }
+
+    function initScene() {
+      scene = new THREE.Scene()
+    }
+
+    function initCamera() {
+      camera = new THREE.PerspectiveCamera( 45, 1000 / 800, .1, 1000 )
+      camera.position.set(...position.camera)
+      camera.lookAt(0, 0, 0)
+    }
+
+    function initControls() {
+      controls = new THREE.OrbitControls(camera)
+      scene.add(camera)
+    }
+
+    function initLight() {
+      // light = new THREE.PointLight(0xffffff, 2, 400)
+      // light = new THREE.AmbientLight(0xffcccc)
+      light = new THREE.SpotLight(0xffffcc, 2, 1000, Math.PI / 4, 25)
+      light.position.set(...position.light)
+      scene.add( light )
+    }
+
+    function addGeometry() {
+      var plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(400, 400),
+        new THREE.MeshLambertMaterial({
+          color: 0xA9A5A5,
+          side: THREE.DoubleSide,
+        })
+      )
+      plane.rotation.x = Math.PI / 2
+
+      scene.add(plane)
+
+      cube1 = new THREE.Mesh(
+        new THREE.CubeGeometry(50, 50, 50),
+        new THREE.MeshLambertMaterial({
+          color: 0x00ff00,
+        }),
+      )
+
+      var cube2 = new THREE.Mesh(
+        new THREE.CubeGeometry(50, 50, 50),
+        new THREE.MeshLambertMaterial({
+          color: 0xffffff,
+        }),
+      )
+
+      cube1.position.x = 50
+      cube2.position.x = -50
+      cube1.position.y = 25
+      cube2.position.y = 25
+
+      scene.add(cube1)
+      scene.add(cube2)
+    }
+
+    function render() {
+      requestAnimationFrame(render)
+      if (cube1.position.z  <= -200) {
+        a = 1
+      } else if (cube1.position.z >= 200) {
+        a = -1
+      }
+      cube1.position.z += a
+      controls.update()
+      renderer.render(scene, camera)
+    }
+
+  </script>
+  
+</body>
+</html>

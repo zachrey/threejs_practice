@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="lib/three.js"></script>
+  <script src="lib/controls/OrbitControls.js"></script>
+</head>
+<body>
+<script>
+var THREE = window.THREE
+window.onload = function() {
+  var renderer = new THREE.WebGLRenderer() 
+  var scene = new THREE.Scene()
+  var apsect = window.innerWidth / window.innerHeight
+  var camera = new THREE.PerspectiveCamera(45, apsect, .1, 1000)
+  var controls = new THREE.OrbitControls(camera)
+  var helper = new THREE.CameraHelper(camera)
+  var light = new THREE.AmbientLight( 0xFFFFFF )
+
+  renderer.setSize(window.innerWidth - 50, window.innerHeight - 50)
+  camera.position.set(0, 0, 600)
+  camera.lookAt(0, 0, 0)
+  light.position.set(150, 100, 600)
+  document.body.appendChild(renderer.domElement)
+  scene.add(helper)
+  scene.add(light)
+
+  pTextUreLoad([
+    './images/0.png',
+    './images/1.png',
+    './images/2.png',
+    './images/3.png',
+    './images/4.png',
+    './images/5.png',
+  ])
+    .then((textures) => {
+      let materials = textures.map(d => new THREE.MeshBasicMaterial({
+        map: d,
+      }))
+      var cube1 = new THREE.Mesh(
+        new THREE.CubeGeometry( 100, 100, 100 ),
+        materials,
+      )
+      cube1.rotation.set(-(Math.PI / 4), Math.PI / 4, 0)
+      cube1.position.x = -100
+      scene.add(cube1)
+    })
+
+  pTextUreLoad([
+    './images/chess.png',
+  ])
+    .then(([texture]) => {
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+      texture.repeat.set(4, 4) // 设置重复
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+      })
+      material.side = THREE.DoubleSide // 设置双面
+      const planeGeo = new THREE.PlaneGeometry(100, 100)
+      const plane = new THREE.Mesh(planeGeo, material)
+      plane.position.x = 100
+      scene.add(plane)
+    })
+
+  function render() {
+    requestAnimationFrame(render)
+    controls.update()
+    renderer.render(scene, camera)
+  }
+
+  render()
+}
+
+// 使用promise来异步加载texture
+function pTextUreLoad(urls) {
+  if (!Array.isArray(urls)) {
+    urls = [String(urls)]
+  }
+  let rst = []
+  rst = urls.map(d => {
+    return new Promise(function(resolve, reject) {
+      new THREE.TextureLoader()
+        .load(
+          d,
+          function(texture) {
+            resolve(texture)
+          },
+          // 目前暂不支持onProgress的回调
+          undefined,
+
+          // onError回调
+          function (err) {
+            reject(err)
+          }
+        )
+    })
+  })
+  return Promise.all(rst)
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="lib/three.js"></script>
+  <script src="lib/loaders/OBJLoader.js"></script>
+  <script src="lib/loaders/MTLLoader.js"></script>
+  <script src="lib/controls/OrbitControls.js"></script>
+  <script src="lib/stat.js"></script>
+</head>
+<body>
+<script>
+var stat = null
+const THREE = window.THREE
+function init() {
+  stat = new window.Stats()
+  stat.domElement.style.position = 'absolute'
+  stat.domElement.style.left = '400px'
+  stat.domElement.style.right = '0px'
+  stat.domElement.style.top = '0px'
+  document.body.appendChild(stat.domElement)
+}
+
+window.onload = function() {
+  init()
+  var scene = new THREE.Scene()
+  var render = new THREE.WebGLRenderer()
+  var aspect = window.innerWidth / window.innerHeight
+  var camera = new THREE.PerspectiveCamera(75, aspect, .1, 1500)
+  var light = new THREE.DirectionalLight( 0xFFFFFF, 1.5 )
+  var controls = new THREE.OrbitControls( camera )
+
+  render.setSize(window.innerWidth - 50, window.innerHeight - 50)
+  document.body.appendChild(render.domElement)
+  light.position.set(200, 100, 600)
+  camera.lookAt(0, 0, 0)
+  camera.position.set(0, 0, 400)
+  scene.add(light)
+
+  let mtlLoader = new THREE.MTLLoader()
+  mtlLoader.load('assets/eye/eyeball.mtl', function(materials) {
+    materials.preload()
+    let objLoader = new THREE.OBJLoader()
+    objLoader.setPath('assets/eye/')
+    objLoader.setMaterials( materials )
+    objLoader.load('eyeball.obj', function ( object ) {
+      object.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material.side = THREE.DoubleSide
+          child.material.shininess = 1000
+        }
+      })
+      object.scale.x =  object.scale.y =  object.scale.z = 50
+      // object.position.y = -100
+      // object.rotation.y = Math.PI / 4
+      // let mesh = object
+      // mesh.position.y = -50
+      scene.add(object)
+    })
+  })
+
+
+
+
+  window.animate = function animate() {
+    stat.begin()
+    window.requestAnimationFrameID = requestAnimationFrame(window.animate)
+    controls.update()
+    render.render(scene, camera)
+    stat.end()
+  }
+
+  window.animate()
+}
+</script>
+</body>
+</html>

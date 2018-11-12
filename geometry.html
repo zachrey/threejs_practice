@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="lib/three.js"></script>
+  <script src="lib/controls/OrbitControls.js"></script>
+</head>
+<body>
+<script>
+var THREE = window.THREE
+window.onload = function() {
+  var scene = new THREE.Scene()
+  var aspect = window.innerWidth / window.innerHeight
+  var camera = new THREE.PerspectiveCamera(60, aspect, .1, 1000)
+  var renderer = new THREE.WebGLRenderer()
+  var controls = new THREE.OrbitControls(camera)
+  var helper = new THREE.CameraHelper(camera)
+
+  renderer.setSize(window.innerWidth - 50, window.innerHeight - 50)
+  camera.position.set( 0, 0, 400 ) // 一定要设置相机的位置
+  camera.lookAt(0, 0, 0)
+  scene.add( helper )
+  document.body.appendChild(renderer.domElement)
+
+  // 定义几何图形
+  // 立体图形
+  var cube = new THREE.Mesh(
+    new THREE.CubeGeometry( 20, 20, 20, 3, 2, 1 ),
+    new THREE.MeshBasicMaterial({
+      color: 'red',
+      wireframe: true,
+    }),
+  )
+  cube.position.set(-100, 0, 0)
+  scene.add(cube)
+
+  // 平面
+  var plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(20, 20, 2, 2),
+    new THREE.MeshBasicMaterial({
+      color: 0xE2AEAE,
+      wireframe: true,
+    }),
+  )
+  plane.position.set(-70, 0, 0)
+  plane.rotation.y = Math.PI / 2
+  scene.add(plane)
+
+  // 球体
+  var sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(20, 8, 8),
+    new THREE.MeshBasicMaterial({
+      color: 0x796060,
+      wireframe: true,
+    }),
+  )
+  sphere.position.set(-40, 0, 0)
+  scene.add(sphere)
+
+  // 圆形
+  var circle = new THREE.Mesh(
+    new THREE.CircleGeometry(20, 32, Math.PI / 4, Math.PI * 1.5),
+    new THREE.MeshBasicMaterial({
+      color: 0x16DFCD,
+      wireframe: true,
+    }),
+  )
+  circle.position.set(10, 0, 0)
+  circle.rotation.y = Math.PI / 4
+  scene.add(circle)
+
+  // 圆柱
+  var cylinder = new THREE.Mesh(
+    new THREE.CylinderGeometry(10, 10, 30, 10, 10),
+    new THREE.MeshBasicMaterial({
+      color: 0x16DFCD,
+      wireframe: true,
+    }),
+  )
+  cylinder.position.set(40, 0, 0)
+  scene.add(cylinder)
+
+  // 圆环
+  var torus = new THREE.Mesh(
+    new THREE.TorusGeometry(10, 3, 16, 32, Math.PI * 1.5),
+    new THREE.MeshBasicMaterial({
+      color: 0x107D4E,
+      wireframe: true,
+    }),
+  )
+  torus.position.set(70, 0, 0)
+  scene.add(torus)
+
+  // 文字
+  var fontloader = new THREE.FontLoader()
+  fontloader.load('./fonts//Arial Narrow_Bold.json', function(font) {
+    var textGeometry = new THREE.TextGeometry( 'Zachrey', {
+      font: font,
+      size: 20,
+      height: 20,
+      curveSegments: 3,
+      bevelEnabled: true,
+      bevelThickness: 5,
+      bevelSize: 3,
+      bevelSegments: 2
+    })
+    var mesh = new THREE.Mesh(
+      textGeometry,
+      new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF,
+        wireframe: true,
+      })
+    )
+    mesh.position.set(100, -10, 0)
+    scene.add(mesh)
+  })
+
+  
+
+  function Render() {
+    requestAnimationFrame(Render)
+    controls.update()
+    renderer.render(scene, camera)
+  }
+
+  Render()
+}
+</script>
+</body>
+
+</html>
